@@ -42,8 +42,13 @@ devShells.default = mdBook.lib.mkShell pkgs {
 
 A [`callPackage`](https://nix.dev/tutorials/callpackage.html) compatible function that returns another function for creating a shell that is tailor-made for writing your book with [`mdBook`](https://rust-lang.github.io/mdBook/).
 
-Arguments:
+Required arguments:
 
 - `name` - The name of the shell.
-- `extraPackages` (optional) - Additional packages to add to the shell.
-- `extraShellHook` (optional) - Additional Bash commands you want to run when you first enter the shell.
+
+Optional arguments:
+
+- `languages` - The languages supported by [`highlight.js`](https://github.com/highlightjs/highlight.js/tree/10.1.1).
+- `autogenerateHighlightJs` - Determines whether or not the custom `theme/highlight.js` is automatically generated when you enter the shell.
+- `extraPackages` - Additional packages to add to the shell.
+- `extraShellHook` - Additional Bash commands you want to run when you first enter the shell.

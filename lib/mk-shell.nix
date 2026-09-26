@@ -1,10 +1,17 @@
-{ mdbook, mkShell, ... }:
+{ callPackage, lib, mdbook, mkShell, ... }:
 
 { name
+
+, languages ? [ ":common" "elm" "haskell" "nix "]
+, autogenerateHighlightJs ? true
+
 , extraPackages ? []
 , extraShellHook ? ""
 }:
 
+let
+  highlightJs = callPackage ./mk-highlight-js.nix {} { inherit languages; };
+in
 mkShell {
   inherit name;
 
@@ -28,6 +35,10 @@ mkShell {
     }
     alias i='init'
 
+    generateHighlightJs () {
+      install -Dm644 "${highlightJs}/highlight.js" "$PROJECT_ROOT/theme/highlight.js"
+    }
+
     build () {
       mdbook build "$@"
     }
@@ -41,6 +52,12 @@ mkShell {
     clean () {
       rm -rf "$PROJECT_ROOT/book"
     }
+
+    ${lib.optionalString autogenerateHighlightJs ''
+      if [ ! -f "$PROJECT_ROOT/theme/highlight.js" ]; then
+        generateHighlightJs
+      fi
+    ''}
 
     echo "Write your book"
     echo ""
