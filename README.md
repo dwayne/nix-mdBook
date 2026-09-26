@@ -12,20 +12,33 @@ inputs.mdBook.url = "github:dwayne/nix-mdBook";
 
 The flake has no inputs of its own.
 
+### Templates
+
+Show all available templates.
+
+```bash
+nix flake show github:dwayne/nix-mdBook
+```
+
+#### Default
+
+```bash
+nix flake new --template github:dwayne/nix-mdBook#default my-book
+
+# or, inside an existing directory
+
+nix flake init --template github:dwayne/nix-mdBook#default
+```
+
+### Shell
+
 ```nix
-let
-  mkShell = mdBook.lib.mkShell pkgs;
-in
-{
-  devShells.default = mkShell {
-    name = "my-book";
-  };
+devShells.default = mdBook.lib.mkShell pkgs {
+  name = "my-book";
 }
 ```
 
-## What's in `lib`?
-
-### [`mkShell`](./lib/mk-shell.nix)
+#### [`mkShell`](./lib/mk-shell.nix)
 
 A [`callPackage`](https://nix.dev/tutorials/callpackage.html) compatible function that returns another function for creating a shell that is tailor-made for writing your book with [`mdBook`](https://rust-lang.github.io/mdBook/).
 
