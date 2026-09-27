@@ -3,7 +3,11 @@
 
   outputs = _:
     {
-      lib.mkShell = import ./lib/mk-shell.nix;
+      lib = {
+        mkBook = import ./lib/mk-book.nix;
+        mkDeployBook = import ./lib/mk-deploy-book.nix;
+        mkShell = import ./lib/mk-shell.nix;
+      };
 
       templates = {
         default = {
