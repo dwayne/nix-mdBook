@@ -16,7 +16,7 @@ in
 {
   inherit book deployBook;
 
-  devShell = mkShell pkgs (shell // { inherit name deployBook; });
+  devShell = mkShell pkgs (shell // { inherit name; });
 
   deployBookApp = {
     type = "app";

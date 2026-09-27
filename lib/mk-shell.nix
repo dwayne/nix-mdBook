@@ -1,10 +1,11 @@
 { callPackage, lib, mdbook, mkShell, ... }:
 
 { name
-, deployBook
 
 , languages ? [ ":common" "elm" "haskell" "nix "]
 , autogenerateHighlightJs ? true
+
+, deployAppName ? "deploy"
 
 , extraPackages ? []
 , extraShellHook ? ""
@@ -18,7 +19,6 @@ mkShell {
 
   packages = [
     mdbook
-    deployBook
   ] ++ extraPackages;
 
   shellHook = ''
@@ -51,6 +51,9 @@ mkShell {
     }
     alias s='serve'
 
+    deploy () {
+      nix run .#${deployAppName} -- "$@"
+    }
     alias d='deploy'
 
     clean () {
