@@ -10,9 +10,34 @@ Add it as an input:
 inputs.mdBook.url = "github:dwayne/nix-mdBook";
 ```
 
-The flake has no inputs of its own.
+Create a project:
 
-### Templates
+```nix
+project = mdBook.lib.mkProject pkgs {
+  inherit system;
+
+  name = "my-book";
+  branch = "gh-pages";
+  root = ./.;
+  paths = [
+    ./src
+    ./theme
+    ./book.toml
+  ];
+};
+```
+
+Use the development shell, book package, and deployment application as outputs of your flake:
+
+```nix
+{
+  devShells.default = project.devShell;
+  packages.default = project.book;
+  apps.deploy = project.deployBookApp;
+}
+```
+
+## Templates
 
 Show all available templates.
 
@@ -20,7 +45,7 @@ Show all available templates.
 nix flake show github:dwayne/nix-mdBook
 ```
 
-#### Default
+### Default
 
 ```bash
 nix flake new --template github:dwayne/nix-mdBook#default my-book
@@ -29,26 +54,3 @@ nix flake new --template github:dwayne/nix-mdBook#default my-book
 
 nix flake init --template github:dwayne/nix-mdBook#default
 ```
-
-### Shell
-
-```nix
-devShells.default = mdBook.lib.mkShell pkgs {
-  name = "my-book";
-}
-```
-
-#### [`mkShell`](./lib/mk-shell.nix)
-
-A [`callPackage`](https://nix.dev/tutorials/callpackage.html) compatible function that returns another function for creating a shell that is tailor-made for writing your book with [`mdBook`](https://rust-lang.github.io/mdBook/).
-
-Required arguments:
-
-- `name` - The name of the shell.
-
-Optional arguments:
-
-- `languages` - The languages supported by [`highlight.js`](https://github.com/highlightjs/highlight.js/tree/10.1.1).
-- `autogenerateHighlightJs` - Determines whether or not the custom `theme/highlight.js` is automatically generated when you enter the shell.
-- `extraPackages` - Additional packages to add to the shell.
-- `extraShellHook` - Additional Bash commands you want to run when you first enter the shell.

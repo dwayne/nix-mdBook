@@ -1,13 +1,25 @@
+#
+# Creates a shell that is tailor-made for writing your book with mdBook.
+#
 { callPackage, lib, mdbook, mkShell, ... }:
 
-{ name
+{ name # The name of the shell
 
+# The languages supported by highlight.js
 , languages ? [ ":common" "elm" "haskell" "nix "]
+
+# Determines whether or not the custom theme/highlight.js
+# is automatically generated when you enter the shell
 , autogenerateHighlightJs ? true
 
+# The name to use for the deploy application
 , deployAppName ? "deploy"
 
+# Additional packages to add to the shell
 , extraPackages ? []
+
+# Additional Bash commands you want to run when
+# you first enter the shell
 , extraShellHook ? ""
 }:
 
