@@ -1,6 +1,7 @@
 { callPackage, lib, mdbook, mkShell, ... }:
 
 { name
+, deployBook
 
 , languages ? [ ":common" "elm" "haskell" "nix "]
 , autogenerateHighlightJs ? true
@@ -17,6 +18,7 @@ mkShell {
 
   packages = [
     mdbook
+    deployBook
   ] ++ extraPackages;
 
   shellHook = ''

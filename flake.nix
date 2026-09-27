@@ -3,11 +3,14 @@
 
   outputs = _:
     {
-      lib = {
+      lib = let
         mkBook = import ./lib/mk-book.nix;
         mkDeployBook = import ./lib/mk-deploy-book.nix;
         mkShell = import ./lib/mk-shell.nix;
-      };
+        mkProject = import ./lib/mk-project.nix {
+          inherit mkBook mkDeployBook mkShell;
+        };
+      in { inherit mkBook mkDeployBook mkShell mkProject; };
 
       templates = {
         default = {
