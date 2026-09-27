@@ -6,6 +6,7 @@ pkgs:
 , src
 , branch
 , deploy
+, shell ? {}
 }:
 
 let
@@ -15,13 +16,11 @@ in
 {
   inherit book deployBook;
 
-  default = {
-    devShell = mkShell pkgs { inherit name deployBook; };
-    package = book;
-    app = {
-      type = "app";
-      program = pkgs.lib.getExe deployBook;
-      meta.description = "Deploy the book to branch '${branch}'";
-    };
+  devShell = mkShell pkgs (shell // { inherit name deployBook; });
+
+  deployBookApp = {
+    type = "app";
+    program = pkgs.lib.getExe deployBook;
+    meta.description = "Deploy the book to branch '${branch}'";
   };
 }
