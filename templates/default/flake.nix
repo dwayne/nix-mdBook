@@ -21,6 +21,7 @@
           root = ./.;
           paths = [
             ./src
+            ./theme
             ./book.toml
           ];
           deploy = deploy.packages.${system}.default;
