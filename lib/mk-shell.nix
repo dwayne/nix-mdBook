@@ -51,6 +51,8 @@ mkShell {
     }
     alias s='serve'
 
+    alias d='deploy'
+
     clean () {
       rm -rf "$PROJECT_ROOT/book"
     }
@@ -66,6 +68,7 @@ mkShell {
     echo "Type 'init' or 'i' to get started"
     echo "Type 'build' or 'b' to build your book"
     echo "Type 'serve' or 's' to serve your book"
+    echo "Type 'deploy' or 'd' to deploy your book"
     echo "Type 'clean' to remove build artifacts"
     echo ""
 
