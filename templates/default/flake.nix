@@ -32,9 +32,9 @@
         };
       in
       {
-        devShells.default = project.default.devShell;
-        packages.default = project.default.package;
-        apps.deploy = project.default.app;
+        devShells.default = project.devShell;
+        packages.default = project.book;
+        apps.deploy = project.deployBookApp;
       }
     );
 }
