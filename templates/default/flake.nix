@@ -15,19 +15,14 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        name = "my-book";
-        branch = "gh-pages";
-        paths = [
-          ./src
-          ./book.toml
-        ];
-
         project = mdBook.lib.mkProject pkgs {
-          inherit name branch;
-          src = pkgs.lib.fileset.toSource {
-            root = ./.;
-            fileset = pkgs.lib.fileset.unions paths;
-          };
+          name = "my-book";
+          branch = "gh-pages";
+          root = ./.;
+          paths = [
+            ./src
+            ./book.toml
+          ];
           deploy = deploy.packages.${system}.default;
         };
       in

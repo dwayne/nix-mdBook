@@ -3,14 +3,21 @@
 pkgs:
 
 { name
-, src
 , branch
+, root
+, paths
 , deploy
 , shell ? {}
 }:
 
 let
-  book = mkBook pkgs { inherit src name; };
+  book = mkBook pkgs {
+    inherit name;
+    src = pkgs.lib.fileset.toSource {
+      inherit root;
+      fileset = pkgs.lib.fileset.unions paths;
+    };
+  };
   deployBook = mkDeployBook pkgs { inherit book branch deploy; };
 in
 {
