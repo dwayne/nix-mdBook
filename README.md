@@ -7,15 +7,22 @@ Reusable Nix tooling for writing books with [`mdBook`](https://rust-lang.github.
 Add it as an input:
 
 ```nix
-inputs.mdBook.url = "github:dwayne/nix-mdBook";
+inputs = {
+  nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  flake-utils.url = "github:numtide/flake-utils";
+  mdBook.url = "github:dwayne/nix-mdBook";
+  deploy = {
+    url = "github:dwayne/deploy";
+    inputs.nixpkgs.follows = "nixpkgs";
+    inputs.flake-utils.follows = "flake-utils";
+  };
+};
 ```
 
 Create a project:
 
 ```nix
 project = mdBook.lib.mkProject pkgs {
-  inherit system;
-
   name = "my-book";
   branch = "gh-pages";
   root = ./.;
@@ -24,6 +31,7 @@ project = mdBook.lib.mkProject pkgs {
     ./theme
     ./book.toml
   ];
+  deploy = deploy.packages.${system}.default;
 };
 ```
 
@@ -34,6 +42,7 @@ Use the development shell, book package, and deployment application as outputs o
   devShells.default = project.devShell;
   packages.default = project.book;
   apps.deploy = project.deployBookApp;
+  checks = { inherit (project) book deployBook; };
 }
 ```
 
