@@ -1,0 +1,20 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    uses: dwayne/nix-mdBook/.github/workflows/check.yml@master
+
+  deploy:
+    needs: check
+    permissions:
+      contents: write
+    uses: dwayne/nix-mdBook/.github/workflows/deploy.yml@master
