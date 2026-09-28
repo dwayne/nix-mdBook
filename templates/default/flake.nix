@@ -39,11 +39,14 @@
         # nix develop
         devShells.default = project.devShell;
 
-        # nix build
+        # nix build -L
         packages.default = project.book;
 
         # nix run .#deploy
         apps.deploy = project.deployBookApp;
+
+        # nix flake check -L
+        checks = { inherit (project) book deployBook; };
       }
     );
 }
