@@ -1,0 +1,10 @@
+name: Check
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  check:
+    uses: dwayne/nix-mdBook/.github/workflows/check.yml@master
