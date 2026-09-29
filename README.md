@@ -4,62 +4,89 @@ Reusable Nix tooling for writing books with [`mdBook`](https://rust-lang.github.
 
 ## Usage
 
-Add it as an input:
+### Create your book
 
-```nix
-inputs = {
-  nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  flake-utils.url = "github:numtide/flake-utils";
-  mdBook.url = "github:dwayne/nix-mdBook";
-  deploy = {
-    url = "github:dwayne/deploy";
-    inputs.nixpkgs.follows = "nixpkgs";
-    inputs.flake-utils.follows = "flake-utils";
-  };
-};
-```
-
-Create a project:
-
-```nix
-project = mdBook.lib.mkProject pkgs {
-  name = "my-book";
-  branch = "gh-pages";
-  root = ./.;
-  paths = [
-    ./src
-    ./theme
-    ./book.toml
-  ];
-  deploy = deploy.packages.${system}.default;
-};
-```
-
-Use the development shell, book package, and deployment application as outputs of your flake:
-
-```nix
-{
-  devShells.default = project.devShell;
-  packages.default = project.book;
-  apps.deploy = project.deployBookApp;
-  checks = { inherit (project) book deployBook; };
-}
-```
-
-## Templates
-
-Show all available templates.
-
-```bash
-nix flake show github:dwayne/nix-mdBook
-```
-
-### Default
+Get started quickly by using the default template:
 
 ```bash
 nix flake new --template github:dwayne/nix-mdBook#default my-book
-
-# or, inside an existing directory
-
-nix flake init --template github:dwayne/nix-mdBook#default
+cd my-book
 ```
+
+Initialize a Git repository:
+
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+```
+
+Enter the development environment and serve your book:
+
+```bash
+nix develop
+# Write your book
+#
+# Type 'init' or 'i' to get started
+# Type 'build' or 'b' to build your book
+# Type 'serve' or 's' to serve your book
+# Type 'deploy' or 'd' to deploy your book
+# Type 'clean' to remove build artifacts
+#
+# (my-book-env)
+serve
+```
+
+Finally, start to write your book and watch your changes live in the browser.
+
+### Deploy your book
+
+Deploy your book using GitHub pages as follows:
+
+1. Create a new repository on GitHub.
+
+It currently assumes the remote is called `origin` and the default branch is called `master`.
+
+2. Run `deploy`.
+
+The first time it runs it builds your book, copies the generated files to a new orphan branch called `gh-pages` and pushes it to GitHub.
+
+On subsequent runs it only commits the changes you made to the `gh-pages` branch and pushes those up to GitHub.
+
+3. Tell GitHub Pages to serve your book from the `gh-pages` branch.
+
+Read [Configuring a publishing source for your GitHub Pages site](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+
+## FAQ
+
+### How to configure `highlight.js`
+
+#### Don't autogenerate it
+
+```nix
+project = mdBook.lib.mkProject pkgs {
+  # ...
+
+  shell = {
+    autogenerateHighlightJs = false;
+  };
+}
+```
+
+#### Change the languages it supports
+
+Maybe you want to write about context-free grammars:
+
+```nix
+project = mdBook.lib.mkProject pkgs {
+  # ...
+
+  shell = {
+    languages = [ "abnf" "bnf" "ebnf" ];
+  };
+}
+```
+
+## Examples
+
+- [How I Built freeCodeCamp's Calculator with Elm](https://github.com/dwayne/elm-calculator-tutorial)
