@@ -1,13 +1,24 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
     flake-deploy.url = "github:dwayne/deploy";
     flake-mdBook.url = "../.";
   };
 
-  outputs = { self, nixpkgs, flake-utils, flake-deploy, flake-mdBook }:
-    flake-utils.lib.eachDefaultSystem(system:
+  outputs = { self, nixpkgs, flake-deploy, flake-mdBook }:
+    let
+      lib = nixpkgs.lib;
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
+      eachSupportedSystem = f:
+        lib.foldAttrs
+          lib.mergeAttrs
+          {}
+          (map
+            (s: lib.mapAttrs (_: v: { ${s} = v; }) (f s))
+            supportedSystems
+          );
+    in
+    eachSupportedSystem(system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
