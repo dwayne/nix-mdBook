@@ -51,18 +51,6 @@ Read [Configuring a publishing source for your GitHub Pages site](https://docs.g
 
 ### How to configure `highlight.js`
 
-#### Don't autogenerate it
-
-```nix
-project = mdBookLib.mkProject {
-  # ...
-
-  devShellOptions = {
-    autogenerateHighlightJs = false;
-  };
-}
-```
-
 #### Change the languages it supports
 
 Maybe you want to write about context-free grammars:
@@ -73,6 +61,18 @@ project = mdBookLib.mkProject {
 
   devShellOptions = {
     languages = [ "abnf" "bnf" "ebnf" ];
+  };
+}
+```
+
+#### Don't autogenerate it
+
+```nix
+project = mdBookLib.mkProject {
+  # ...
+
+  devShellOptions = {
+    autogenerateHighlightJs = false;
   };
 }
 ```
