@@ -3,10 +3,9 @@
 , nodejs
 , npmHooks
 , stdenv
-, ...
 }:
 
-{ languages }:
+{ languages }: # The languages to support
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "highlight.js";

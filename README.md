@@ -9,35 +9,25 @@ Reusable Nix tooling for writing books with [`mdBook`](https://rust-lang.github.
 Get started quickly by using the default template:
 
 ```bash
-nix flake new --template github:dwayne/nix-mdBook#default my-book
+nix flake new -t github:dwayne/nix-mdBook my-book
 cd my-book
-```
 
-Initialize a Git repository:
-
-```bash
 git init
 git add .
+
+nix develop
+
+git add flake.lock justfile theme
 git commit -m "Initial commit"
 ```
 
-Enter the development environment and serve your book:
+### Serve your book
 
 ```bash
-nix develop
-# Write your book
-#
-# Type 'init' or 'i' to get started
-# Type 'build' or 'b' to build your book
-# Type 'serve' or 's' to serve your book
-# Type 'deploy' or 'd' to deploy your book
-# Type 'clean' to remove build artifacts
-#
-# (my-book-env)
-serve
+just serve
 ```
 
-Finally, start to write your book and watch your changes live in the browser.
+Now you can start to write your book and watch your changes live in the browser.
 
 ### Deploy your book
 
@@ -47,7 +37,7 @@ Deploy your book using GitHub pages as follows:
 
 It currently assumes the remote is called `origin` and the default branch is called `master`.
 
-2. Run `deploy`.
+2. `just deploy`.
 
 The first time it runs it builds your book, copies the generated files to a new orphan branch called `gh-pages` and pushes it to GitHub.
 
@@ -64,10 +54,10 @@ Read [Configuring a publishing source for your GitHub Pages site](https://docs.g
 #### Don't autogenerate it
 
 ```nix
-project = mdBook.lib.mkProject pkgs {
+project = mdBookLib.mkProject {
   # ...
 
-  shell = {
+  devShellOptions = {
     autogenerateHighlightJs = false;
   };
 }
@@ -78,10 +68,10 @@ project = mdBook.lib.mkProject pkgs {
 Maybe you want to write about context-free grammars:
 
 ```nix
-project = mdBook.lib.mkProject pkgs {
+project = mdBookLib.mkProject {
   # ...
 
-  shell = {
+  devShellOptions = {
     languages = [ "abnf" "bnf" "ebnf" ];
   };
 }

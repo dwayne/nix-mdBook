@@ -1,33 +1,40 @@
-{ mkBook, mkDeployBook, mkShell }:
+{ lib
 
-pkgs:
+, buildBook
+, mkDeployBook
+, mkDevShell
+}:
 
-{ name
-, branch
-, root
-, paths
-, deploy
-, shell ? {}
+{ name  # The name of the book
+, root  # A path to the directory containing the book.toml
+, paths # A list of paths to all the files needed to build the book
+
+  # The options you want to pass on to mkDevShell (see ./mk-dev-shell.nix)
+, devShellOptions ? {}
+
+  # The branch to which you want to deploy
+, branch ? "gh-pages"
 }:
 
 let
-  book = mkBook pkgs {
+  book = buildBook {
     inherit name;
-    src = pkgs.lib.fileset.toSource {
+    src = lib.fileset.toSource {
       inherit root;
-      fileset = pkgs.lib.fileset.unions paths;
+      fileset = lib.fileset.unions paths;
     };
   };
-  deployBook = mkDeployBook pkgs { inherit book branch deploy; };
+
+  deployBook = mkDeployBook { inherit book branch; };
 in
 {
   inherit book deployBook;
 
-  devShell = mkShell pkgs (shell // { inherit name; });
+  devShell = mkDevShell devShellOptions;
 
-  deployBookApp = {
+  app = {
     type = "app";
-    program = pkgs.lib.getExe deployBook;
+    program = lib.getExe deployBook;
     meta.description = "Deploy the book to branch '${branch}'";
   };
 }

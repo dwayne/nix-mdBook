@@ -2,7 +2,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    mdBook.url = "github:dwayne/nix-mdBook";
+    mdBook.url = "../.";
     deploy = {
       url = "github:dwayne/deploy";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -15,12 +15,11 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        project = mdBook.lib.mkProject pkgs {
-          # The name of your book
-          name = "my-book";
+        mdBookLib = mdBook.lib.init pkgs (deploy.packages.${system}.default);
 
-          # The branch to use for deployments
-          branch = "gh-pages";
+        project = mdBookLib.mkProject {
+          # The name of your book
+          name = "example-book";
 
           # Where's the root of your project?
           root = ./.;
@@ -31,19 +30,20 @@
             ./theme
             ./book.toml
           ];
-
-          deploy = deploy.packages.${system}.default;
         };
       in
       {
         # nix develop
-        devShells.default = project.devShell;
+        devShells.default = pkgs.mkShell {
+          name = "example-book";
+          inputsFrom = [ project.devShell ];
+        };
 
         # nix build -L
         packages.default = project.book;
 
         # nix run .#deploy
-        apps.deploy = project.deployBookApp;
+        apps.deploy = project.app;
 
         # nix flake check -L
         checks = { inherit (project) book deployBook; };

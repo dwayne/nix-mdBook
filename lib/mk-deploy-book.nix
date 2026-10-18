@@ -1,12 +1,14 @@
-{ writeShellApplication, ... }:
+{ writeShellApplication
 
-{ book   # The book
-, branch # The branch to which you want to deploy
 , deploy # The deploy derivation
 }:
 
+{ book   # The book
+, branch # The branch to which you want to deploy
+}:
+
 writeShellApplication {
-  name = "deploy";
+  name = "deploy-book";
 
   runtimeInputs = [ deploy ];
 
