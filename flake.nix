@@ -3,7 +3,7 @@
 
   outputs = { self }:
     {
-      lib.init = pkgs: deploy: pkgs.callPackage ./lib { inherit deploy; };
+      lib.mkMdBook = pkgs: deploy: pkgs.callPackage ./lib { inherit deploy; };
 
       templates = {
         default = self.templates.basic;

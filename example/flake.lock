@@ -1,20 +1,15 @@
 {
   "nodes": {
-    "deploy": {
+    "flake-deploy": {
       "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
+        "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1790474612,
-        "narHash": "sha256-+3HKZIq5LOoCx2/mhgzavC9QlH/qOGo77IpTJTqZJVw=",
+        "lastModified": 1792323409,
+        "narHash": "sha256-dgAGWd5RTMZROIYoOiUi6/ENrjYMaby2T4HzY8JNIL0=",
         "owner": "dwayne",
         "repo": "deploy",
-        "rev": "ba9a28a7483ee8ab93f5f1c75defd49be433d523",
+        "rev": "5f20e2ef502139eb749a19e277172400cc4a9980",
         "type": "github"
       },
       "original": {
@@ -22,6 +17,17 @@
         "repo": "deploy",
         "type": "github"
       }
+    },
+    "flake-mdBook": {
+      "locked": {
+        "path": "../.",
+        "type": "path"
+      },
+      "original": {
+        "path": "../.",
+        "type": "path"
+      },
+      "parent": []
     },
     "flake-utils": {
       "inputs": {
@@ -41,18 +47,23 @@
         "type": "github"
       }
     },
-    "mdBook": {
+    "nixpkgs": {
       "locked": {
-        "path": "../.",
-        "type": "path"
+        "lastModified": 1792116957,
+        "narHash": "sha256-EjZqHKObBfIOeHZnMRVV87HB3pPq/WBkmRJWyFxmZu8=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "f20cd90e28fe0403873f473b29e42662cd86e8c4",
+        "type": "github"
       },
       "original": {
-        "path": "../.",
-        "type": "path"
-      },
-      "parent": []
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
     },
-    "nixpkgs": {
+    "nixpkgs_2": {
       "locked": {
         "lastModified": 1792116957,
         "narHash": "sha256-EjZqHKObBfIOeHZnMRVV87HB3pPq/WBkmRJWyFxmZu8=",
@@ -70,10 +81,10 @@
     },
     "root": {
       "inputs": {
-        "deploy": "deploy",
+        "flake-deploy": "flake-deploy",
+        "flake-mdBook": "flake-mdBook",
         "flake-utils": "flake-utils",
-        "mdBook": "mdBook",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs_2"
       }
     },
     "systems": {

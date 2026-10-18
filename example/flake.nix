@@ -2,22 +2,19 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    mdBook.url = "../.";
-    deploy = {
-      url = "github:dwayne/deploy";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
+    flake-deploy.url = "github:dwayne/deploy";
+    flake-mdBook.url = "../.";
   };
 
-  outputs = { self, nixpkgs, flake-utils, mdBook, deploy }:
+  outputs = { self, nixpkgs, flake-utils, flake-deploy, flake-mdBook }:
     flake-utils.lib.eachDefaultSystem(system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        mdBookLib = mdBook.lib.init pkgs (deploy.packages.${system}.default);
+        deploy = flake-deploy.lib.mkDeploy pkgs;
+        mdBook = flake-mdBook.lib.mkMdBook pkgs deploy;
 
-        project = mdBookLib.mkProject {
+        project = mdBook.mkProject {
           # The name of your book
           name = "example-book";
 
