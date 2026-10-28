@@ -37,7 +37,7 @@ It currently assumes the remote is called `origin` and the default branch is cal
 
 2. `just deploy`.
 
-The first time it runs it builds your book, copies the generated files to a new orphan branch called `gh-pages` and pushes it to GitHub.
+The first time it runs it builds your book, copies the generated files to a new orphan branch called `book` and pushes it to GitHub.
 
 On subsequent runs it only commits the changes you made to the `gh-pages` branch and pushes those up to GitHub.
 

@@ -15,7 +15,7 @@
 , extraPaths ? []
 , devShellArgs ? {}
 , serveArgs ? {}
-, branch ? "gh-pages"
+, branch ? "book"
 }:
 let
   fs = lib.fileset;
