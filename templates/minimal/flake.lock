@@ -32,14 +32,18 @@
         ]
       },
       "locked": {
-        "path": "../../.",
-        "type": "path"
+        "lastModified": 1793225079,
+        "narHash": "sha256-hBLoSeINBlXdAky/W++LfRXy67FG3zk66b8aYWDhj8U=",
+        "owner": "dwayne",
+        "repo": "nix-mdBook",
+        "rev": "6607b0e5c570694887b98cf0ff901956003cbaa4",
+        "type": "github"
       },
       "original": {
-        "path": "../../.",
-        "type": "path"
-      },
-      "parent": []
+        "owner": "dwayne",
+        "repo": "nix-mdBook",
+        "type": "github"
+      }
     },
     "nix-utils-src": {
       "flake": false,

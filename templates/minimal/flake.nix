@@ -3,8 +3,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-utils-src = { url = "github:dwayne/nix-utils"; flake = false; };
     flake-nix-mdBook = {
-      # TODO: Set url = "github:dwayne/nix-mdBook";
-      url = "../../.";
+      url = "github:dwayne/nix-mdBook";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-deploy.inputs.nix-utils-src.follows = "nix-utils-src";
     };
