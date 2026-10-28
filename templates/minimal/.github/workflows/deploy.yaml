@@ -1,0 +1,16 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    #
+    # Manual dispatch can run from any branch; only deploy from master or main.
+    #
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    uses: dwayne/nix-mdBook/.github/workflows/reusable-deploy.yaml@master
+    permissions:
+      contents: write

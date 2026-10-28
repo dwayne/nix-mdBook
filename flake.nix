@@ -1,16 +1,32 @@
 {
   description = "Reusable Nix tooling for writing books with mdBook";
 
-  outputs = { self }:
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-deploy = {
+      url = "github:dwayne/deploy";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  outputs = { self, nixpkgs, flake-deploy }:
+    let
+      lib = nixpkgs.lib;
+    in
     {
-      lib.mkMdBook = pkgs: deploy: pkgs.callPackage ./lib { inherit deploy; };
+      overlays.default = lib.composeManyExtensions [
+        flake-deploy.overlays.default
+        (final: _: {
+          nixMdBookPackages = final.callPackage ./lib {};
+        })
+      ];
 
       templates = {
-        default = self.templates.basic;
+        default = self.templates.minimal;
 
-        basic = {
-          description = "A basic structure for your mdBook";
-          path = ./templates/basic;
+        minimal = {
+          description = "The bare minimum required for your mdBook";
+          path = ./templates/minimal;
         };
       };
     };

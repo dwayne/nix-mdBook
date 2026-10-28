@@ -1,10 +1,22 @@
-name: Deploy
+name: Reusable deploy
 
 on:
   workflow_call:
 
 jobs:
+  checks:
+    uses: ./.github/workflows/reusable-checks.yaml
+
   deploy:
+    needs: checks
+
+    concurrency:
+      group: nix-mdBook
+      cancel-in-progress: false
+
+    permissions:
+      contents: write
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7

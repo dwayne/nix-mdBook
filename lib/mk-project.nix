@@ -1,38 +1,60 @@
 { lib
+, mkShell
 
 , buildBook
+, devShell
 , mkDeployBook
-, mkDevShell
+, mkServe
+, DEFAULT_PATHS
+, OPTIONAL_PATHS
 }:
 
-{ name  # The name of the book
-, root  # A path to the directory containing the book.toml
-, paths # A list of paths to all the files needed to build the book
-
-  # The options you want to pass on to mkDevShell (see ./mk-dev-shell.nix)
-, devShellOptions ? {}
-
-  # The branch to which you want to deploy
+{ name
+, root
+, defaultPaths ? DEFAULT_PATHS
+, extraPaths ? []
+, devShellArgs ? {}
+, serveArgs ? {}
 , branch ? "gh-pages"
 }:
-
 let
+  fs = lib.fileset;
+
+  toAbsPath = s:
+    let
+      absPath = root + "/${s}";
+    in
+    if builtins.elem s OPTIONAL_PATHS then
+      fs.maybeMissing absPath
+    else
+      absPath;
+
   book = buildBook {
     inherit name;
-    src = lib.fileset.toSource {
+    src = fs.toSource {
       inherit root;
-      fileset = lib.fileset.unions paths;
+      fileset = fs.unions (builtins.map toAbsPath (defaultPaths ++ extraPaths));
     };
   };
 
   deployBook = mkDeployBook { inherit book branch; };
+  serveBook = mkServe (serveArgs // { name = "serve-${name}"; root = book; });
 in
 {
-  inherit book deployBook;
+  inherit book serveBook deployBook;
 
-  devShell = mkDevShell devShellOptions;
+  devShell = mkShell (devShellArgs // {
+    inherit name;
+    inputsFrom = [ devShell ] ++ (devShellArgs.inputsFrom or []);
+  });
 
-  app = {
+  serveBookApp = {
+    type = "app";
+    program = lib.getExe serveBook;
+    meta.description = "Serve the book";
+  };
+
+  deployBookApp = {
     type = "app";
     program = lib.getExe deployBook;
     meta.description = "Deploy the book to branch '${branch}'";

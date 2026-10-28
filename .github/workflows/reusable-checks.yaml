@@ -1,0 +1,41 @@
+name: Reusable checks
+
+on:
+  workflow_call:
+    inputs:
+      systems:
+        description: JSON list of systems to check (x86_64-linux always runs)
+        type: string
+        default: '["x86_64-linux"]'
+        #
+        # Examples:
+        #   - '["aarch64-linux"]'
+        #   - '["aarch64-darwin"]'
+        #   - '["aarch64-linux","aarch64-darwin"]'
+        #
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        system: ${{ fromJSON(inputs.systems) }}
+        #
+        # x86_64-linux always runs, even if the caller leaves it out
+        #
+        include:
+          - system: x86_64-linux
+
+    name: ${{ matrix.system }}
+    runs-on: ${{ fromJSON('{"x86_64-linux":"ubuntu-latest","aarch64-linux":"ubuntu-24.04-arm","aarch64-darwin":"macos-latest"}')[matrix.system] }}
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Check flake
+        run: nix flake check -L

@@ -3,9 +3,9 @@
 , nodejs
 , npmHooks
 , stdenv
-}:
 
-{ languages }: # The languages to support
+, languages
+}:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "highlight.js";
@@ -45,8 +45,8 @@ stdenv.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out
-    cp build/highlight.min.js $out/highlight.js
+    mkdir -p "$out"
+    cp build/highlight.min.js "$out/highlight.js"
 
     runHook postInstall
   '';

@@ -9,5 +9,5 @@
 runCommand name {
   nativeBuildInputs = [ mdbook ];
 } ''
-  mdbook build --dest-dir "$out" ${src}
+  mdbook build --dest-dir "$out" "${src}"
 ''

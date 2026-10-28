@@ -1,60 +1,29 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    flake-deploy.url = "github:dwayne/deploy";
-    flake-mdBook.url = "../.";
+    nix-utils-src = { url = "github:dwayne/nix-utils"; flake = false; };
+    flake-nix-mdBook = {
+      url = "../.";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-deploy.inputs.nix-utils-src.follows = "nix-utils-src";
+    };
   };
 
-  outputs = { self, nixpkgs, flake-deploy, flake-mdBook }:
+  outputs = { self, nixpkgs, nix-utils-src, flake-nix-mdBook }:
     let
       lib = nixpkgs.lib;
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
-      eachSupportedSystem = f:
-        lib.foldAttrs
-          lib.mergeAttrs
-          {}
-          (map
-            (s: lib.mapAttrs (_: v: { ${s} = v; }) (f s))
-            supportedSystems
-          );
+      nixUtils = import nix-utils-src lib;
     in
-    eachSupportedSystem(system:
+    nixUtils.eachDefaultSystem (system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
-
-        deploy = flake-deploy.lib.mkDeploy pkgs;
-        mdBook = flake-mdBook.lib.mkMdBook pkgs deploy;
-
-        project = mdBook.mkProject {
-          # The name of your book
-          name = "example-book";
-
-          # Where's the root of your project?
-          root = ./.;
-
-          # Which files are needed to build your book?
-          paths = [
-            ./src
-            ./theme
-            ./book.toml
-          ];
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ flake-nix-mdBook.overlays.default ];
         };
       in
-      {
-        # nix develop
-        devShells.default = pkgs.mkShell {
-          name = "example-book";
-          inputsFrom = [ project.devShell ];
-        };
-
-        # nix build -L
-        packages.default = project.book;
-
-        # nix run .#deploy
-        apps.deploy = project.app;
-
-        # nix flake check -L
-        checks = { inherit (project) book deployBook; };
+      pkgs.nixMdBookPackages.defaultFlakeOutput {
+        name = "example-book";
+        root = ./.;
       }
     );
 }

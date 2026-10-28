@@ -1,0 +1,23 @@
+name: Checks
+
+on:
+  push:
+    branches-ignore: [master, main]
+
+#
+# Cancel a branch's previous run when you push to it again.
+# We only care about the latest commit.
+#
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    uses: dwayne/nix-mdBook/.github/workflows/reusable-checks.yaml@master
+    #
+    # Optional: Run checks on more systems (x86_64-linux always runs)
+    #
+    # with:
+    #   systems: '["aarch64-linux","aarch64-darwin"]'
+    #

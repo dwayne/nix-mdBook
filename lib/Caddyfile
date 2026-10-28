@@ -1,0 +1,8 @@
+:{$port}
+
+root * {$root}
+
+file_server {
+  browse
+  precompressed br gzip
+}

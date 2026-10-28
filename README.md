@@ -14,11 +14,9 @@ cd my-book
 
 git init
 git add .
+git commit -m "Initial commit"
 
 nix develop
-
-git add flake.lock justfile theme
-git commit -m "Initial commit"
 ```
 
 ### Serve your book
@@ -56,24 +54,22 @@ Read [Configuring a publishing source for your GitHub Pages site](https://docs.g
 Maybe you want to write about context-free grammars:
 
 ```nix
-project = mdBookLib.mkProject {
+(pkgs.nixMdBookPackages.overrideScope (_: _: {
+  languages = [ "abnf" "bnf" "ebnf" ];
+})).defaultFlakeOutput {
   # ...
-
-  devShellOptions = {
-    languages = [ "abnf" "bnf" "ebnf" ];
-  };
 }
 ```
 
 #### Don't autogenerate it
 
 ```nix
-project = mdBookLib.mkProject {
-  # ...
-
-  devShellOptions = {
+(pkgs.nixMdBookPackages.overrideScope (_: prev: {
+  devShell = prev.devShell.override {
     autogenerateHighlightJs = false;
   };
+})).defaultFlakeOutput {
+  # ...
 }
 ```
 

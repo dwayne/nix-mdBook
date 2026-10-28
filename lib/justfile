@@ -1,15 +1,21 @@
-[default]
-[private]
-list:
-    @just --list --unsorted
+clean_paths := trim(replace_regex("book result " + env("PROJECT_CLEAN_PATHS_EXTRA", ""), '\s+', ' '))
+
+[private, default]
+default:
+  @just --list --unsorted
 
 # Create your new book with the given title
 init title:
   mdbook init --ignore none --title "{{title}}"
 
 # Generate highlight.js
-gen-highlight-js:
-  install -Dm644 "$PROJECT_HIGHLIGHT_JS" "theme/highlight.js"
+generate-highlight-js:
+  #!/usr/bin/env bash
+  if [ -n "$PROJECT_HIGHLIGHT_JS" ]; then
+    install -Dm644 "$PROJECT_HIGHLIGHT_JS" "theme/highlight.js"
+  else
+    echo "No highlight.js, skipping"
+  fi
 
 # Build your book from its markdown files
 [positional-arguments]
@@ -26,11 +32,13 @@ serve *args:
 deploy *args:
   nix run .#deploy -- "$@"
 
+# Remove build artifacts
 clean:
-  rm -rf book result
+  rm -rf {{clean_paths}}
 
 alias i := init
-alias g := gen-highlight-js
+alias g := generate-highlight-js
 alias b := build
 alias s := serve
 alias d := deploy
+alias c := clean
